@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ainm.API", "Ainm.API\Ainm.API.csproj", "{E7E806AA-30C7-C2ED-C246-EB0BFFB74BF1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E7E806AA-30C7-C2ED-C246-EB0BFFB74BF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7E806AA-30C7-C2ED-C246-EB0BFFB74BF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7E806AA-30C7-C2ED-C246-EB0BFFB74BF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7E806AA-30C7-C2ED-C246-EB0BFFB74BF1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {25DDA156-7252-4263-A10E-248042007E48}
+	EndGlobalSection
+EndGlobal

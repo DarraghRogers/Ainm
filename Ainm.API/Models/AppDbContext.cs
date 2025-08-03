@@ -11,5 +11,7 @@ namespace Ainm.API.Data
         public DbSet<BabyName> BabyNames { get; set; }
         public DbSet<Swipe> Swipes { get; set; }
         public DbSet<Match> Matches { get; set; }
+
+       
     }
 }
