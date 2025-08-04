@@ -4,9 +4,11 @@ import axios from 'axios';
 
 const SwipePage = () => {
   const [babyNames, setBabyNames] = useState([]);
+  const [user, setUser] = useState(null);
 
-
+  
   useEffect(() => {
+    //get list of baby names from the API
     axios.get('http://localhost:5233/api/babyname') // Adjust the endpoint
       .then(response => {
         console.log('Fetched baby names:', response.data);
@@ -15,11 +17,20 @@ const SwipePage = () => {
       .catch(error => {
         console.error('Error fetching baby names:', error);
       });
+
+      //get user info from the API
+      axios.get("http://localhost:5233/api/users/me", { withCredentials: true })
+      .then(res => {
+        console.log('Fetched user info:', res.data);
+        setUser(res.data);
+      })
+      .catch(err => setUser(null));
   }, []);
 
+  //handle swipe action
   const handleSwipe = async (direction, bn) => {
   const payload = {
-    userId: currentUserId,      // Replace this with your actual user ID
+    userId: user.id,      // Replace this with your actual user ID
     babyNameId: bn.id,          // bn is the baby name object from map()
     direction                   // 'left' or 'right' from TinderCard
   };
@@ -46,7 +57,6 @@ const SwipePage = () => {
   }
 };
   //return(<div className="swipe-container">SwipePage</div>);
-
   return (
     <div className="swipe-container">
       

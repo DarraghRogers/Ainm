@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Ainm.API.Controllers
 {
@@ -22,6 +23,21 @@ namespace Ainm.API.Controllers
             _config = config;
         }
 
+        [Authorize]
+        [HttpGet("me")]
+        public IActionResult GetCurrentUser()
+        {
+            var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdStr)) return Unauthorized();
+
+            if (!int.TryParse(userIdStr, out int userId))
+                return BadRequest("Invalid user ID.");
+
+            var user = _context.Users.Find(userId);
+            if (user == null) return NotFound();
+
+            return Ok(new { user.Id, user.Username, user.Email /* other fields */ });
+        }
         // Registration
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest req)
