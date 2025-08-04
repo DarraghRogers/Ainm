@@ -3,6 +3,10 @@ using Ainm.API.Data;
 using Ainm.API.Models;
 using Microsoft.EntityFrameworkCore;
 using BCrypt.Net; // BCrypt.Net-Next
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using System.Security.Claims;
 
 namespace Ainm.API.Controllers
 {
@@ -11,9 +15,11 @@ namespace Ainm.API.Controllers
     public class UsersController : ControllerBase
     {
         private readonly AppDbContext _context;
-        public UsersController(AppDbContext context)
+        private readonly IConfiguration _config;
+        public UsersController(AppDbContext context, IConfiguration config)
         {
             _context = context;
+            _config = config;
         }
 
         // Registration
@@ -42,9 +48,35 @@ namespace Ainm.API.Controllers
             if (user == null || !BCrypt.Net.BCrypt.Verify(req.Password, user.PasswordHash))
                 return Unauthorized("Invalid credentials.");
 
-            // Here, generate JWT token (for demo, return user info)
-            return Ok(new { user.Id, user.Username, user.Email });
+            var token = GenerateJwtToken(user);
+            Console.WriteLine($"Generated JWT for user {user.Username}: {token}");
+            Response.Cookies.Append("jwt", token, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = false, // ONLY use true for HTTPS
+                SameSite = SameSiteMode.Lax, // Lax is safest for localhost
+                Expires = DateTimeOffset.UtcNow.AddDays(7)
+            });
+
+            return Ok(new
+            {
+                user = new {user.Username, user.Email }
+            });
         }
+
+        [HttpPost("logout")]
+    public IActionResult Logout()
+    {
+        // Overwrite cookie to expire immediately
+        Response.Cookies.Append("jwt", "", new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Strict,
+            Expires = DateTimeOffset.UtcNow.AddDays(-1)
+        });
+        return Ok(new { message = "Logged out" });
+    }
 
         public class RegisterRequest
         {
@@ -57,6 +89,28 @@ namespace Ainm.API.Controllers
         {
             public string Email { get; set; }
             public string Password { get; set; }
+        }
+
+        private string GenerateJwtToken(User user)
+        {
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim("username", user.Username)
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: _config["Jwt:Issuer"],
+                audience: null,
+                claims: claims,
+                expires: DateTime.UtcNow.AddDays(7),
+                signingCredentials: creds);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }
