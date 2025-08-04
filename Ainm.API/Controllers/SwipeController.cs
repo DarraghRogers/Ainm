@@ -21,7 +21,7 @@ namespace Ainm.API.Controllers
         {
             var user = await _context.Users.FindAsync(req.UserId);
             if (user == null) return BadRequest("User not found.");
-
+            bool liked = req.Direction?.ToLower() == "right";  // 'right' means liked
             // Record the swipe
             var swipe = await _context.Swipes
                 .FirstOrDefaultAsync(s => s.UserId == req.UserId && s.BabyNameId == req.BabyNameId);
@@ -31,18 +31,18 @@ namespace Ainm.API.Controllers
                 {
                     UserId = req.UserId,
                     BabyNameId = req.BabyNameId,
-                    Liked = req.Liked
+                    Liked = liked
                 };
                 _context.Swipes.Add(swipe);
             }
             else
             {
-                swipe.Liked = req.Liked;
+                swipe.Liked = liked;
             }
             await _context.SaveChangesAsync();
 
             // Matching logic
-            if (req.Liked && user.PartnerId != null)
+            if (liked && user.PartnerId != null)
             {
                 var partnerSwipe = await _context.Swipes
                     .FirstOrDefaultAsync(s => s.UserId == user.PartnerId && s.BabyNameId == req.BabyNameId && s.Liked);
@@ -73,7 +73,7 @@ namespace Ainm.API.Controllers
         {
             public int UserId { get; set; }
             public int BabyNameId { get; set; }
-            public bool Liked { get; set; }
+            public string Direction { get; set; } // Optional, if you want to keep track of swipe direction
         }
     }
 }
