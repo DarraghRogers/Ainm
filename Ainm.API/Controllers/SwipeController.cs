@@ -50,7 +50,10 @@ namespace Ainm.API.Controllers
                 {
                     // Match found
                     var matchExists = await _context.Matches
-                        .AnyAsync(m => m.UserAId == user.Id && m.UserBId == user.PartnerId && m.BabyNameId == req.BabyNameId);
+                        .AnyAsync(m =>
+                            ((m.UserAId == user.Id && m.UserBId == user.PartnerId) ||
+                             (m.UserAId == user.PartnerId && m.UserBId == user.Id)) &&
+                            m.BabyNameId == req.BabyNameId);
                     if (!matchExists)
                     {
                         _context.Matches.Add(new Match

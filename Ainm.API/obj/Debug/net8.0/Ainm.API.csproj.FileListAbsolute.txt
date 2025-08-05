@@ -168,3 +168,8 @@ C:\Users\Darragh Rogers\Projects\Ainm\Ainm.API\obj\Debug\net8.0\refint\Ainm.API.
 C:\Users\Darragh Rogers\Projects\Ainm\Ainm.API\obj\Debug\net8.0\Ainm.API.pdb
 C:\Users\Darragh Rogers\Projects\Ainm\Ainm.API\obj\Debug\net8.0\Ainm.API.genruntimeconfig.cache
 C:\Users\Darragh Rogers\Projects\Ainm\Ainm.API\obj\Debug\net8.0\ref\Ainm.API.dll
+C:\Users\Darragh Rogers\Projects\Ainm\Ainm.API\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
+C:\Users\Darragh Rogers\Projects\Ainm\Ainm.API\bin\Debug\net8.0\MailKit.dll
+C:\Users\Darragh Rogers\Projects\Ainm\Ainm.API\bin\Debug\net8.0\MimeKit.dll
+C:\Users\Darragh Rogers\Projects\Ainm\Ainm.API\bin\Debug\net8.0\System.Security.Cryptography.Pkcs.dll
+C:\Users\Darragh Rogers\Projects\Ainm\Ainm.API\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll

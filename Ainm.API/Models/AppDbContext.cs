@@ -5,12 +5,14 @@ namespace Ainm.API.Data
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<User> Users { get; set; }
         public DbSet<BabyName> BabyNames { get; set; }
         public DbSet<Swipe> Swipes { get; set; }
         public DbSet<Match> Matches { get; set; }
+        public DbSet<PartnerInvite> PartnerInvite { get; set; }
+        public DbSet<Partnership> Partnerships { get; set; }
 
        
     }

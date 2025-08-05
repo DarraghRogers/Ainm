@@ -10,7 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 builder.Services.AddCors(opt =>
 {
@@ -48,6 +48,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
         };
     });
+
+
 
 var app = builder.Build();
 

@@ -1,80 +1,80 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import TinderCard from 'react-tinder-card';
 import axios from 'axios';
+import './SwipePage.css';
+import { AuthContext } from "./AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const SwipePage = () => {
   const [babyNames, setBabyNames] = useState([]);
-  const [user, setUser] = useState(null);
+  const { user, logout, loading } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  
   useEffect(() => {
-    //get list of baby names from the API
-    axios.get('http://localhost:5233/api/babyname') // Adjust the endpoint
-      .then(response => {
-        console.log('Fetched baby names:', response.data);
-        setBabyNames(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching baby names:', error);
-      });
+    if (!loading && user) {
+      axios.get('http://localhost:5233/api/babyname')
+        .then(response => setBabyNames(response.data))
+        .catch(error => console.error('Error fetching baby names:', error));
+    }
+  }, [loading, user]);
 
-      //get user info from the API
-      axios.get("http://localhost:5233/api/users/me", { withCredentials: true })
-      .then(res => {
-        console.log('Fetched user info:', res.data);
-        setUser(res.data);
-      })
-      .catch(err => setUser(null));
-  }, []);
-
-  //handle swipe action
   const handleSwipe = async (direction, bn) => {
-  const payload = {
-    userId: user.id,      // Replace this with your actual user ID
-    babyNameId: bn.id,          // bn is the baby name object from map()
-    direction                   // 'left' or 'right' from TinderCard
+    const payload = {
+      userId: user?.id,
+      babyNameId: bn.id,
+      direction
+    };
+    try {
+      await axios.post('http://localhost:5233/api/swipe', payload, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+      // Handle match logic here
+    } catch (error) {
+      console.error('Swipe failed:', error.response?.data || error.message);
+    }
   };
 
-  console.log(`Swiped ${direction} on ${bn.name}`);
-  console.log('Payload:', JSON.stringify(payload, null, 2));
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
+  };
 
-  try {
-    const response = await axios.post('http://localhost:5233/api/swipe', payload, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
+  if (loading) return null; // Don't render anything while loading
 
-    if (response.data.matched) {
-      console.log('🎉 It’s a match!');
-      // Trigger match popup/modal here if you want
-    } else {
-      console.log('Swipe recorded. No match yet.');
-    }
-
-  } catch (error) {
-    console.error('Swipe failed:', error.response?.data || error.message);
-  }
-};
-  //return(<div className="swipe-container">SwipePage</div>);
   return (
-    <div className="swipe-container">
-      
-      {babyNames.map(bn => (
-        <TinderCard
-          key={bn.id}
-          onSwipe={(dir) => handleSwipe(dir, bn)}
-          className="swipe">
-          <div className="card">
-            <h3>{bn.name}</h3>
-            <p><strong>Gender:</strong> {bn.gender}</p>
-            <p><strong>Origin:</strong> {bn.origin}</p>
-            <p><strong>Meaning:</strong> {bn.meaning}</p>
-            <p><em>{bn.description}</em></p>
-          </div>
-        </TinderCard>
-        
-      )) } 
+    <div className="container swipepage-container mt-5">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h2 className="text-center flex-grow-1">Swipe Baby Names</h2>
+        <button
+          className="btn btn-outline-danger ms-3"
+          onClick={handleLogout}>
+          Logout
+        </button>
+        <button onClick={() => navigate("/invite")} className="btn btn-outline-primary ms-3">
+          Invite Partner
+        </button>
+      </div>
+      <div className="d-flex justify-content-center">
+        <div className="swipe-card-stack">
+          {babyNames.map(bn => (
+            <TinderCard
+              key={bn.id}
+              onSwipe={dir => handleSwipe(dir, bn)}
+              className="swipe"
+            >
+              <div className="card swipe-card shadow-lg">
+                <div className="card-body">
+                  <h3 className="card-title">{bn.name}</h3>
+                  <p className="card-text"><strong>Gender:</strong> {bn.gender}</p>
+                  <p className="card-text"><strong>Origin:</strong> {bn.origin}</p>
+                  <p className="card-text"><strong>Meaning:</strong> {bn.meaning}</p>
+                  <p className="card-text"><em>{bn.description}</em></p>
+                </div>
+              </div>
+            </TinderCard>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

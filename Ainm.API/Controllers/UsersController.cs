@@ -23,7 +23,7 @@ namespace Ainm.API.Controllers
             _config = config;
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet("me")]
         public IActionResult GetCurrentUser()
         {
@@ -71,7 +71,7 @@ namespace Ainm.API.Controllers
                 HttpOnly = true,
                 Secure = false, // ONLY use true for HTTPS
                 SameSite = SameSiteMode.Lax, // Lax is safest for localhost
-                Expires = DateTimeOffset.UtcNow.AddDays(7)
+                Expires = DateTimeOffset.UtcNow.AddDays(5)
             });
 
             return Ok(new
