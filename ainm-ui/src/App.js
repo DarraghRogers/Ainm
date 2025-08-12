@@ -8,6 +8,7 @@ import axios from 'axios';
 import ProtectedRoute from './components/ProtectedRoute';
 import InvitePartner from "./components/InvitePartner";
 import AcceptInvite from "./pages/AcceptInvite";
+import MatchesPage from './components/MatchesPage';
 function App() {
   return (
     <AuthProvider>
@@ -23,6 +24,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <SwipePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/matches"
+            element={
+              <ProtectedRoute>
+                <MatchesPage />
               </ProtectedRoute>
             }
           />

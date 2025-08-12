@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate, Link, useLocation } from "react-router-dom";
+import { AuthContext } from "./AuthContext";
 
 export default function Register() {
   const [form, setForm] = useState({ username: '', email: '', password: '' });
   const [msg, setMsg] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
+  const { login } = useContext(AuthContext); // <-- Use login from context
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -16,6 +18,17 @@ export default function Register() {
         email: form.email,
         password: form.password
       }, { withCredentials: true });
+
+
+      // Use AuthContext login to update context and set JWT
+      //try this to login after registration
+      await login(form.email, form.password);
+
+      // Log the user in to set the JWT cookie
+      // await axios.post('http://localhost:5233/api/users/login', {
+      //   email: form.email,
+      //   password: form.password
+      // }, { withCredentials: true });
 
       // Check for inviteCode in query params
       const params = new URLSearchParams(location.search);

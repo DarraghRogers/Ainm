@@ -80,19 +80,30 @@ namespace Ainm.API.Controllers
             });
         }
 
-        [HttpPost("logout")]
-    public IActionResult Logout()
-    {
-        // Overwrite cookie to expire immediately
-        Response.Cookies.Append("jwt", "", new CookieOptions
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUserById(int id)
         {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Strict,
-            Expires = DateTimeOffset.UtcNow.AddDays(-1)
-        });
-        return Ok(new { message = "Logged out" });
-    }
+            var user = await _context.Users.FindAsync(id);
+            Console.WriteLine($"Fetching user with ID {id}: {user?.Username ?? "Not found"}");
+            if (user == null)
+                return NotFound();
+
+            return Ok(new { user.Id, user.Username, user.Email });
+        }
+
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            // Overwrite cookie to expire immediately
+            Response.Cookies.Append("jwt", "", new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddDays(-1)
+            });
+            return Ok(new { message = "Logged out" });
+        }
 
         public class RegisterRequest
         {

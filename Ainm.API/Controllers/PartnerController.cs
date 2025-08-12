@@ -19,26 +19,31 @@ public class PartnerController : ControllerBase
 
     // POST: api/partner/invite
     [HttpPost("invite")]
-    public async Task<IActionResult> InvitePartner([FromBody] InvitePartnerRequest request)
+    public async Task<IActionResult> InvitePartner([FromBody] InviteRequest request)
     {
-        
-        var inviterId = ControllerHelpers.GetUserIdFromClaims(User);
-        Console.WriteLine($"Inviter ID: {inviterId}");
-        var inviteCode = Guid.NewGuid().ToString().Substring(0, 8);
+        var existingInvite = await _context.PartnerInvite
+            .FirstOrDefaultAsync(i => i.InviteeEmail == request.Email && !i.Accepted);
 
+        if (existingInvite != null)
+        {
+            // Return existing link
+            return Ok(new { link = GenerateInviteLink(existingInvite.InviteCode), existing = true });
+        }
+
+        // Create new invite
+        var inviteCode = Guid.NewGuid().ToString();
         var invite = new PartnerInvite
         {
-            InviterUserId = inviterId,
             InviteeEmail = request.Email,
             InviteCode = inviteCode,
-            CreatedAt = DateTime.UtcNow,
-            Accepted = false
+            Accepted = false,
+            InviterUserId = ControllerHelpers.GetUserIdFromClaims(User)
         };
-
         _context.PartnerInvite.Add(invite);
         await _context.SaveChangesAsync();
 
-        var link = $"http://localhost:3000/invite/{inviteCode}";
+        // Send email if needed...
+        var link = GenerateInviteLink(inviteCode);
 
         if (!string.IsNullOrEmpty(request.Email))
         {
@@ -49,7 +54,7 @@ public class PartnerController : ControllerBase
             );
         }
 
-        return Ok(new { link });
+        return Ok(new { link = GenerateInviteLink(inviteCode), existing = false });
     }
 
     // POST: api/partner/link
@@ -72,14 +77,28 @@ public class PartnerController : ControllerBase
         };
         _context.Partnerships.Add(partnership);
 
+        // Update PartnerId for both users
+        var inviter = await _context.Users.FindAsync(invite.InviterUserId);
+        var invitee = await _context.Users.FindAsync(inviterId);
+        if (inviter != null && invitee != null)
+        {
+            inviter.PartnerId = invitee.Id;
+            invitee.PartnerId = inviter.Id;
+        }
+
         invite.Accepted = true;
         await _context.SaveChangesAsync();
 
         return Ok("Partner linked!");
     }
+
+    private string GenerateInviteLink(string inviteCode)
+    {
+        return $"http://localhost:3000/invite/{inviteCode}";
+    }
 }
 
-public class InvitePartnerRequest
+public class InviteRequest
 {
     public string Email { get; set; }
 }

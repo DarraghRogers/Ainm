@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 const SwipePage = () => {
   const [babyNames, setBabyNames] = useState([]);
+  const [matchInfo, setMatchInfo] = useState(null); // For match animation
   const { user, logout, loading } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -24,11 +25,23 @@ const SwipePage = () => {
       babyNameId: bn.id,
       direction
     };
+console.log(`Swiping ${direction} on ${bn.name} (ID: ${bn.id})`);
+console.log(`User ID: ${user?.id}`);
+console.log('Payload:', payload);
     try {
-      await axios.post('http://localhost:5233/api/swipe', payload, {
+      const res = await axios.post('http://localhost:5233/api/swipe', payload, {
         headers: { 'Content-Type': 'application/json' }
       });
-      // Handle match logic here
+      if (res.data.matched) {
+        // Fetch partner username for the animation
+        
+        const partnerRes = await axios.get(`http://localhost:5233/api/users/${user.partnerId}`, { withCredentials: true });
+        setMatchInfo({
+          name: bn.name,
+          partner: partnerRes.data.user.Username
+        });
+        setTimeout(() => setMatchInfo(null), 3500); // Hide after 3.5s
+      }
     } catch (error) {
       console.error('Swipe failed:', error.response?.data || error.message);
     }
@@ -53,6 +66,9 @@ const SwipePage = () => {
         <button onClick={() => navigate("/invite")} className="btn btn-outline-primary ms-3">
           Invite Partner
         </button>
+        <button onClick={() => navigate("/matches")} className="btn btn-outline-success ms-3">
+          View Matches
+        </button>
       </div>
       <div className="d-flex justify-content-center">
         <div className="swipe-card-stack">
@@ -75,6 +91,16 @@ const SwipePage = () => {
           ))}
         </div>
       </div>
+      {matchInfo && (
+        <div className="match-animation">
+          <div className="match-popup">
+            <h2>🎉 Congratulations! 🎉</h2>
+            <p>
+              You and <strong>{matchInfo.partner}</strong> both liked <strong>{matchInfo.name}</strong>!
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,0 +1,25 @@
+.matches-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.match-card {
+  width: 220px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #e3f0ff 0%, #ffe0ec 100%);
+  margin-bottom: 1rem;
+  transition: transform 0.2s;
+}
+
+.match-card:hover {
+  transform: scale(1.04);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+}
+
+.card-title {
+  color: #ffb6b9;
+  font-weight: bold;
+  font-size: 1.2rem;
+}

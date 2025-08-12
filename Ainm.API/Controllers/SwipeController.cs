@@ -20,11 +20,13 @@ namespace Ainm.API.Controllers
         public async Task<IActionResult> Swipe([FromBody] SwipeRequest req)
         {
             var user = await _context.Users.FindAsync(req.UserId);
+            Console.WriteLine($"User ID: {req.UserId}, Baby Name ID: {req.BabyNameId}, Direction: {req.Direction}");
             if (user == null) return BadRequest("User not found.");
             bool liked = req.Direction?.ToLower() == "right";  // 'right' means liked
             // Record the swipe
             var swipe = await _context.Swipes
                 .FirstOrDefaultAsync(s => s.UserId == req.UserId && s.BabyNameId == req.BabyNameId);
+                Console.WriteLine($"Swipe found: {swipe != null}");
             if (swipe == null)
             {
                 swipe = new Swipe
