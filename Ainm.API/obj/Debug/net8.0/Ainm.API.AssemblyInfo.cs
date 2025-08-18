@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Ainm.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+309fad5ef06016567eb0097d716466d46c2c237e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+77f8ab4469bf424e3888d1bfaa66fd377e3c7412")]
 [assembly: System.Reflection.AssemblyProductAttribute("Ainm.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Ainm.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

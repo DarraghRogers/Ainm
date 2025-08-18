@@ -10,11 +10,13 @@ public class PartnerController : ControllerBase
 {
     private readonly AppDbContext _context;
     private readonly IEmailSender _emailSender;
+    private readonly IConfiguration _configuration;
 
-    public PartnerController(AppDbContext context, IEmailSender emailSender)
+    public PartnerController(AppDbContext context, IEmailSender emailSender, IConfiguration configuration)
     {
         _context = context;
         _emailSender = emailSender;
+        _configuration = configuration;
     }
 
     // POST: api/partner/invite
@@ -94,7 +96,8 @@ public class PartnerController : ControllerBase
 
     private string GenerateInviteLink(string inviteCode)
     {
-        return $"http://localhost:3000/invite/{inviteCode}";
+        var apiUrl = _configuration["ApiUrl"];
+        return $"{apiUrl}/invite/{inviteCode}";
     }
 }
 

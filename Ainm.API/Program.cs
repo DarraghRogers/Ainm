@@ -12,16 +12,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 
-builder.Services.AddCors(opt =>
+builder.Services.AddCors(options =>
 {
-    opt.AddPolicy("AllowReact", builder =>
-    {
-        builder.WithOrigins("http://localhost:3000")
-               .AllowAnyHeader()
-               .AllowAnyMethod()
-               .AllowCredentials();
-    });
+    options.AddPolicy("AllowDev",
+        policy => policy.WithOrigins("http://localhost:3000")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials());
 });
+
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -65,7 +64,7 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-app.UseCors("AllowReact");
+app.UseCors("AllowDev");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
