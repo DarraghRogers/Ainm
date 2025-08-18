@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\Ainm.API.props" />
-</Project>
