@@ -7,23 +7,24 @@ export const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
-    axios.get("http://localhost:5233/api/users/me", { withCredentials: true })
+    axios.get(`${apiUrl}/api/users/me`, { withCredentials: true })
       .then(res => setUser(res.data))
       .catch(() => setUser(null))
       .finally(() => setTimeout(() => setLoading(false), 1800)); // Show loading for ~2s
   }, []);
 
   const login = async (email, password) => {
-    await axios.post("http://localhost:5233/api/users/login", { email, password }, { withCredentials: true });
+    await axios.post(`${apiUrl}/api/users/login`, { email, password }, { withCredentials: true });
     // Re-fetch user info
-    const res = await axios.get("http://localhost:5233/api/users/me", { withCredentials: true });
+    const res = await axios.get(`${apiUrl}/api/users/me`, { withCredentials: true });
     setUser(res.data);
   };
 
   const logout = async () => {
-    await axios.post("http://localhost:5233/api/users/logout", {}, { withCredentials: true });
+    await axios.post(`${apiUrl}/api/users/logout`, {}, { withCredentials: true });
     setUser(null);
   };
 

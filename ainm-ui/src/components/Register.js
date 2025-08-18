@@ -9,32 +9,26 @@ export default function Register() {
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useContext(AuthContext); // <-- Use login from context
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5233/api/users/register', {
+      await axios.post(`${apiUrl}/api/users/register`, {
         username: form.username,
         email: form.email,
         password: form.password
       }, { withCredentials: true });
 
-
       // Use AuthContext login to update context and set JWT
       //try this to login after registration
       await login(form.email, form.password);
-
-      // Log the user in to set the JWT cookie
-      // await axios.post('http://localhost:5233/api/users/login', {
-      //   email: form.email,
-      //   password: form.password
-      // }, { withCredentials: true });
 
       // Check for inviteCode in query params
       const params = new URLSearchParams(location.search);
       const inviteCode = params.get("inviteCode");
       if (inviteCode) {
-        await axios.post("http://localhost:5233/api/partner/link", { inviteCode }, { withCredentials: true });
+        await axios.post(`${apiUrl}/api/partner/link`, { inviteCode }, { withCredentials: true });
       }
 
       navigate("/swipepage");

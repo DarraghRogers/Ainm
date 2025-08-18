@@ -10,10 +10,11 @@ const SwipePage = () => {
   const [matchInfo, setMatchInfo] = useState(null); // For match animation
   const { user, logout, loading } = useContext(AuthContext);
   const navigate = useNavigate();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     if (!loading && user) {
-      axios.get('http://localhost:5233/api/babyname')
+      axios.get(`${apiUrl}/api/babyname`)
         .then(response => setBabyNames(response.data))
         .catch(error => console.error('Error fetching baby names:', error));
     }
@@ -25,21 +26,33 @@ const SwipePage = () => {
       babyNameId: bn.id,
       direction
     };
-console.log(`Swiping ${direction} on ${bn.name} (ID: ${bn.id})`);
-console.log(`User ID: ${user?.id}`);
-console.log('Payload:', payload);
+
     try {
-      const res = await axios.post('http://localhost:5233/api/swipe', payload, {
+      const res = await axios.post(`${apiUrl}/api/swipe`, payload, {
         headers: { 'Content-Type': 'application/json' }
       });
       if (res.data.matched) {
         // Fetch partner username for the animation
-        
-        const partnerRes = await axios.get(`http://localhost:5233/api/users/${user.partnerId}`, { withCredentials: true });
-        setMatchInfo({
-          name: bn.name,
-          partner: partnerRes.data.user.Username
-        });
+        if (user && user.partnerId) {
+          try {
+            const partnerRes = await axios.get(`${apiUrl}/api/users/${user.partnerId}`, { withCredentials: true });
+            setMatchInfo({
+              name: bn.name,
+              partner: partnerRes.data.user.Username
+            });
+          } catch (err) {
+            console.error('Failed to fetch partner info:', err.response?.data || err.message);
+            setMatchInfo({
+              name: bn.name,
+              partner: "your partner"
+            });
+          }
+        } else {
+          setMatchInfo({
+            name: bn.name,
+            partner: "your partner"
+          });
+        }
         setTimeout(() => setMatchInfo(null), 3500); // Hide after 3.5s
       }
     } catch (error) {

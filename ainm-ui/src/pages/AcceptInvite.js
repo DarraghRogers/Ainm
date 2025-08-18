@@ -8,6 +8,7 @@ export default function AcceptInvite() {
   const [msg, setMsg] = useState("");
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     if (!user) {
@@ -16,7 +17,7 @@ export default function AcceptInvite() {
     }
     async function accept() {
       try {
-        await axios.post("http://localhost:5233/api/partner/link", { inviteCode }, { withCredentials: true });
+        await axios.post(`${apiUrl}/api/partner/link`, { inviteCode }, { withCredentials: true });
         setMsg("Partner linked! Redirecting...");
         setTimeout(() => navigate("/swipepage"), 2000);
       } catch (err) {

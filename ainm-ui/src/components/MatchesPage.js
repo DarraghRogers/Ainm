@@ -8,10 +8,11 @@ export default function MatchesPage() {
   const { user, loading } = useContext(AuthContext);
   const [matches, setMatches] = useState([]);
   const navigate = useNavigate();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     if (!loading && user) {
-      axios.get(`http://localhost:5233/api/match/${user.id}`, { withCredentials: true })
+      axios.get(`${apiUrl}/api/match/${user.id}`, { withCredentials: true })
         .then(res => setMatches(res.data))
         .catch(() => setMatches([]));
     }
@@ -19,7 +20,7 @@ export default function MatchesPage() {
 
   const handleRemoveMatch = async (babyNameId) => {
     try {
-      await axios.delete(`http://localhost:5233/api/match/${user.id}/${babyNameId}`, { withCredentials: true });
+      await axios.delete(`${apiUrl}/api/match/${user.id}/${babyNameId}`, { withCredentials: true });
       setMatches(matches.filter(m => m.id !== babyNameId));
     } catch {
       // Optionally show error
