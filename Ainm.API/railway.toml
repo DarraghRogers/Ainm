@@ -1,0 +1,8 @@
+[build]
+builder = "DockerFile"
+dockerfilePath = "./Ainm/Ainm.Api/DockerFile
+
+
+[deploy]
+startCommand = "./Ainm/Ainm.Api"
+healthCheckPath = "/health"
