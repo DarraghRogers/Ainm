@@ -55,13 +55,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate(); // ensures migrations are applied
-
-    if (!db.BabyNames.Any())
-    {
-        db.BabyNames.AddRange(BabyNameSeeder.GetSeedNames());
-        db.SaveChanges();
-    }
+    db.Database.Migrate();
 }
 
 app.UseCors("AllowDev");
