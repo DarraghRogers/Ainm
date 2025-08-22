@@ -17,7 +17,7 @@ namespace Ainm.API.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.7")
+                .HasAnnotation("ProductVersion", "9.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -53,6 +53,98 @@ namespace Ainm.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("BabyNames");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Popular girl's name.",
+                            Gender = "F",
+                            Meaning = "Life",
+                            Name = "Ava",
+                            Origin = "Hebrew"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Popular boy's name.",
+                            Gender = "M",
+                            Meaning = "Strong-willed warrior",
+                            Name = "Liam",
+                            Origin = "Irish"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Classic boy's name.",
+                            Gender = "M",
+                            Meaning = "Rest, comfort",
+                            Name = "Noah",
+                            Origin = "Hebrew"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Timeless girl's name.",
+                            Gender = "F",
+                            Meaning = "Whole or universal",
+                            Name = "Emma",
+                            Origin = "German"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "Nature-inspired boy's name.",
+                            Gender = "M",
+                            Meaning = "Olive tree",
+                            Name = "Oliver",
+                            Origin = "Latin"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Description = "Elegant girl's name.",
+                            Gender = "F",
+                            Meaning = "Wisdom",
+                            Name = "Sophia",
+                            Origin = "Greek"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Description = "Biblical boy's name.",
+                            Gender = "M",
+                            Meaning = "My God is Yahweh",
+                            Name = "Elijah",
+                            Origin = "Hebrew"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Description = "Short and sweet girl's name.",
+                            Gender = "F",
+                            Meaning = "Mine",
+                            Name = "Mia",
+                            Origin = "Italian"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Description = "Classic and strong boy's name.",
+                            Gender = "M",
+                            Meaning = "Supplanter",
+                            Name = "James",
+                            Origin = "Hebrew"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Description = "Beautiful girl's name.",
+                            Gender = "F",
+                            Meaning = "God is my oath",
+                            Name = "Isabella",
+                            Origin = "Hebrew"
+                        });
                 });
 
             modelBuilder.Entity("Ainm.API.Models.Match", b =>
