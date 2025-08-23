@@ -54,7 +54,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 
-
+Console.WriteLine("ConnectionString: " + builder.Configuration.GetConnectionString("DefaultConnection"));
+Console.WriteLine("Env DB_CONNECTION: " + Environment.GetEnvironmentVariable("DefaultConnection"));
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
