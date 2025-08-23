@@ -19,17 +19,15 @@ builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 builder.Services.AddCors(options =>
 {
-    // options.AddPolicy("AllowDev",
-    //     policy => policy.WithOrigins("http://localhost:3000")
-    //                     .AllowAnyHeader()
-    //                     .AllowAnyMethod()
-    //                     .AllowCredentials());
     options.AddPolicy("AllowNetlify",
         policy =>
         {
-            policy.WithOrigins("https://68a91a0da2c1e7a0f3addf6f--ainmwebapp.netlify.app")
+            policy.WithOrigins(
+                "https://ainmwebapp.netlify.app",
+                "http://localhost:3000")
                   .AllowAnyHeader()
-                  .AllowAnyMethod();
+                  .AllowAnyMethod()
+                  .AllowCredentials();
         });
 });
 
@@ -60,9 +58,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-
-Console.WriteLine("ConnectionString: " + builder.Configuration.GetConnectionString("DefaultConnection"));
-Console.WriteLine("Env DB_CONNECTION: " + Environment.GetEnvironmentVariable("DefaultConnection"));
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -70,6 +65,7 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
 }
+app.UseHttpsRedirection();
 
 app.UseHealthChecks("/health");
 app.UseCors("AllowNetlify"); // <-- enable CORS
