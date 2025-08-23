@@ -19,11 +19,18 @@ builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowDev",
-        policy => policy.WithOrigins("http://localhost:3000")
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .AllowCredentials());
+    // options.AddPolicy("AllowDev",
+    //     policy => policy.WithOrigins("http://localhost:3000")
+    //                     .AllowAnyHeader()
+    //                     .AllowAnyMethod()
+    //                     .AllowCredentials());
+    options.AddPolicy("AllowNetlify",
+        policy =>
+        {
+            policy.WithOrigins("https://68a91a0da2c1e7a0f3addf6f--ainmwebapp.netlify.app")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
 });
 
 
@@ -65,7 +72,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.UseHealthChecks("/health");
-app.UseCors("AllowDev");
+app.UseCors("AllowNetlify"); // <-- enable CORS
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
