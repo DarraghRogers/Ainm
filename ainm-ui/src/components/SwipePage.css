@@ -87,6 +87,18 @@
   text-align: center;
   animation: popUp 0.5s;
 }
+
+.swipe-card-stack {
+  position: relative;
+  width: 300px;
+  height: 400px;
+}
+
+.swipe-card {
+  cursor: grab;
+  user-select: none;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
