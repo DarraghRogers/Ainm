@@ -33,7 +33,11 @@ export default function Register() {
 
       navigate("/swipepage");
     } catch (err) {
-      setMsg(err.response?.data || err.message || "Error");
+      const msg =
+        err.response?.data?.title ||
+        err.response?.data?.message ||
+        "Registration failed. Please try again.";
+      setMsg(msg);
     }
   };
 
