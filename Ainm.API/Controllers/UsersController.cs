@@ -69,8 +69,8 @@ namespace Ainm.API.Controllers
             Response.Cookies.Append("jwt", token, new CookieOptions
             {
                 HttpOnly = true,
-                Secure = false, // ONLY use true for HTTPS
-                SameSite = SameSiteMode.Lax, // Lax is safest for localhost
+                Secure = true, // ONLY use true for HTTPS
+                SameSite = SameSiteMode.None, // Lax is safest for localhost
                 Expires = DateTimeOffset.UtcNow.AddDays(5)
             });
 

@@ -17,7 +17,7 @@ const SwipePage = () => {
   useEffect(() => {
     if (!loading && user) {
       axios
-        .get(`${apiUrl}/api/babyname`)
+        .get(`${apiUrl}/api/babyname`, { withCredentials: true })
         .then((res) => setBabyNames(res.data))
         .catch((err) => console.error("Error fetching baby names:", err));
     }
@@ -38,6 +38,7 @@ const SwipePage = () => {
     try {
       const res = await axios.post(`${apiUrl}/api/swipe`, payload, {
         headers: { "Content-Type": "application/json" },
+        withCredentials: true
       });
 
       if (res.data.matched) {
