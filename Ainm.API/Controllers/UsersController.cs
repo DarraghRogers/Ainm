@@ -42,6 +42,7 @@ namespace Ainm.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest req)
         {
+            Console.WriteLine($"Registering user: {req.Username}, {req.Email}");
             if (await _context.Users.AnyAsync(u => u.Email == req.Email))
                 return BadRequest("Email already in use.");
 
@@ -60,6 +61,7 @@ namespace Ainm.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest req)
         {
+            Console.WriteLine($"Logging in user: {req.Email}");
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == req.Email);
             if (user == null || !BCrypt.Net.BCrypt.Verify(req.Password, user.PasswordHash))
                 return Unauthorized("Invalid credentials.");
