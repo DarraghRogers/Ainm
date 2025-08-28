@@ -11,7 +11,13 @@ export default function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await login(form.email, form.password);
+      const token = await login(form.email, form.password);
+      // Set the cookie with the token
+      Response.Cookies.Append("jwt", token, {
+        httpOnly: true,
+        sameSite: "None",
+        secure: true // Must be true for SameSite=None on HTTPS
+      });
       navigate("/swipepage");
     } catch (err) {
       setMsg("Login failed, please try again.");
