@@ -23,7 +23,7 @@ namespace Ainm.API.Controllers
             _config = config;
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpGet("me")]
         public IActionResult GetCurrentUser()
         {
