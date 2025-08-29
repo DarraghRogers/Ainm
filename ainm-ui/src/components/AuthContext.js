@@ -10,7 +10,10 @@ export function AuthProvider({ children }) {
   const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
-    axios.get(`${apiUrl}/api/users/me`, { withCredentials: true })
+    const token = localStorage.getItem('jwt');
+    axios.get(`${apiUrl}/api/users/me`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
       .then(res => setUser(res.data))
       .catch(() => setUser(null))
       .finally(() => setTimeout(() => setLoading(false), 1800)); // Show loading for ~2s

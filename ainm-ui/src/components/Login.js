@@ -12,12 +12,7 @@ export default function Login() {
     e.preventDefault();
     try {
       const token = await login(form.email, form.password);
-      // Set the cookie with the token
-      Response.Cookies.Append("jwt", token, {
-        httpOnly: true,
-        sameSite: "None",
-        secure: true // Must be true for SameSite=None on HTTPS
-      });
+      localStorage.setItem('jwt', token); // Save token for future requests
       navigate("/swipepage");
     } catch (err) {
       setMsg("Login failed, please try again.");
