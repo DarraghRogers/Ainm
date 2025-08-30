@@ -103,10 +103,9 @@ const SwipePage = () => {
       </div>
 
       <div className="d-flex justify-content-center">
-        <div className="responsive-container">
-          <div className="swipe-card-stack" style={{ position: "relative", width: "300px", height: "400px" }}>
-            {springs.map((props, i) => (
-              <animated.div
+        <div className="swipe-card-stack" style={{ position: "relative", width: "300px", height: "400px" }}>
+          {springs.map((props, i) => (
+            <animated.div
   key={babyNames[i]?.id || i}
   {...bind(i)}
   className="card swipe-card shadow-lg" // <- use your original CSS classes
@@ -126,8 +125,7 @@ const SwipePage = () => {
     <p className="card-text"><em>{babyNames[i]?.description}</em></p>
   </div>
 </animated.div>
-            ))}
-          </div>
+          ))}
         </div>
       </div>
 

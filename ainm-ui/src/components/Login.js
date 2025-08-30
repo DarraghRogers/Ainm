@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
 import "./Login.css"
+import AppTitle from "./AppTitle";
 
 export default function Login() {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -24,8 +25,9 @@ export default function Login() {
 
   return (
     <div className="auth-container">
-      <div className="responsive-container">
-        <form onSubmit={handleLogin} className="auth-card">
+      <AppTitle /> {/* Move here, outside the card */}
+      <div className="auth-card">
+        <form onSubmit={handleLogin} className="auth-form">
           <h3 className="auth-title">Login</h3>
           <div className="mb-3">
             <input

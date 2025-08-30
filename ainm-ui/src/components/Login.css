@@ -3,6 +3,7 @@
 .auth-container, .responsive-container {
   min-height: 100vh;
   display: flex;
+  flex-direction: column;      /* Add this line */
   align-items: center;
   justify-content: center;
   margin: 0;
@@ -50,4 +51,32 @@
 .alert {
   border-radius: 12px;
   text-align: center;
+}
+
+.app-title, .app-title * {
+  font-family: 'Irish Grover', cursive, sans-serif !important;
+}
+
+.app-title {
+  font-family: 'Irish Grover', cursive, sans-serif !important;
+  font-size: 3.5rem;
+  color: #ffb6b9;
+  letter-spacing: 2px;
+  text-align: center;
+  display: block;
+}
+
+.app-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.baby-icon {
+  height: 3.5rem;
+  width: auto;
+  margin-right: 1rem;
 }
