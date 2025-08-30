@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using Ainm.API.Data;
 using Ainm.API.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Ainm.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class SwipeController : ControllerBase

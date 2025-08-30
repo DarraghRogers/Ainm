@@ -1,7 +1,6 @@
 .swipepage-container {
   min-height: 80vh;
   background: linear-gradient(135deg, #f8fafc 0%, #e3f0ff 100%);
-  border-radius: 32px;
 }
 
 .swipe-card-stack {
@@ -17,7 +16,7 @@
   height: 100%;
   min-height: 100%;
   min-width: 100%;
-  background: linear-gradient(135deg, #ffe0ec 0%, #e0f7fa 100%);
+  background: rgba(255, 255, 255, 0.85); /* or just #fff */
   border-radius: 32px;
   padding: 32px 24px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.10);

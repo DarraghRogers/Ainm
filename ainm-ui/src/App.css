@@ -1,3 +1,15 @@
+/* App.css */
+
+/* Make all containers flexible */
+html, body, #root {
+  width: 100vw;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background: linear-gradient(135deg, #f8fafc 0%, #e3f0ff 100%);
+}
+
 .App {
   text-align: center;
 }
@@ -34,5 +46,61 @@
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* Responsive container */
+.responsive-container {
+  width: 100vw;
+  max-width: 100vw;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Make forms and cards responsive */
+.auth-card, .swipe-card {
+  width: 100vw;
+  max-width: 100vw;
+  margin: 0;
+  padding: 1.5rem 0.5rem;
+  border-radius: 0;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+  background: #fff;
+  box-sizing: border-box;
+}
+
+/* Responsive buttons */
+button, .btn {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border-radius: 16px;
+  margin-top: 0.5rem;
+}
+
+/* Responsive input fields */
+input, select, textarea {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+/* Media queries for mobile */
+@media (max-width: 600px) {
+  .auth-card, .swipe-card {
+    padding: 1rem 0.25rem;
+    border-radius: 0;
+    max-width: 100vw;
+  }
+  .responsive-container {
+    padding: 0;
+  }
+  h3, .auth-title {
+    font-size: 1.5rem;
   }
 }

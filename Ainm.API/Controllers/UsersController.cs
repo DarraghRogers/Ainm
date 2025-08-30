@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Ainm.API.Controllers
 {
+    
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
@@ -58,6 +59,7 @@ namespace Ainm.API.Controllers
         }
 
         // Login
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest req)
         {
@@ -68,20 +70,43 @@ namespace Ainm.API.Controllers
 
             var token = GenerateJwtToken(user);
             Console.WriteLine($"Generated JWT for user {user.Username}: {token}");
-            Response.Cookies.Append("jwt", token, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true, // ONLY use true for HTTPS
-                SameSite = SameSiteMode.None, // Lax is safest for localhost
-                Expires = DateTimeOffset.UtcNow.AddDays(5)
-            });
+            var env = _config["ASPNETCORE_ENVIRONMENT"] ?? Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            bool isProd = string.Equals(env, "Production", StringComparison.OrdinalIgnoreCase);
 
-            return Ok(new
+            CookieOptions cookieOptions;
+            if (isProd)
             {
-                user = new {user.Username, user.Email }
-            });
+                cookieOptions = new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
+                    Expires = DateTimeOffset.UtcNow.AddDays(5)
+                };
+            }
+            else
+            {
+                cookieOptions = new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = false,
+                    SameSite = SameSiteMode.Lax,
+                    Expires = DateTimeOffset.UtcNow.AddDays(5)
+                };
+            }
+            // Response.Cookies.Append("jwt", token, new CookieOptions
+            // {
+                
+            //     HttpOnly = true,
+            //     Secure = true, // ONLY use true for HTTPS
+            //     SameSite = SameSiteMode.None, // Lax is safest for localhost
+            //     Expires = DateTimeOffset.UtcNow.AddDays(5)
+            // });
+
+            return Ok(new { token });
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(int id)
         {

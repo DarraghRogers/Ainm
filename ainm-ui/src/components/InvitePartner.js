@@ -13,7 +13,8 @@ export default function InvitePartner() {
 
   const handleEmailInvite = async () => {
     try {
-      const res = await axios.post(`${apiUrl}/api/partner/invite`, { email }, { withCredentials: true });
+      const token = localStorage.getItem('jwt');
+      const res = await axios.post(`${apiUrl}/api/partner/invite`, { email }, { headers: { Authorization: `Bearer ${token}` } });
       setInviteLink(res.data.link);
       setMsg(res.data.existing ? "Invite already sent! Link reused." : "Invite sent by email!");
     } catch (err) {
@@ -23,7 +24,8 @@ export default function InvitePartner() {
 
   const handleLinkInvite = async () => {
     try {
-      const res = await axios.post(`${apiUrl}/api/partner/invite`, { email }, { withCredentials: true });
+      const token = localStorage.getItem('jwt');
+      const res = await axios.post(`${apiUrl}/api/partner/invite`, { email }, { headers: { Authorization: `Bearer ${token}` } });
       setInviteLink(res.data.link);
       setMsg(res.data.existing ? "Link already generated! Reusing link." : "Copy and share this link!");
     } catch (err) {

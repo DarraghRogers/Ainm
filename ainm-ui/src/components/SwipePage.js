@@ -16,8 +16,8 @@ const SwipePage = () => {
 
   useEffect(() => {
     if (!loading && user) {
-      axios
-        .get(`${apiUrl}/api/babyname`, { withCredentials: true })
+      const token = localStorage.getItem('jwt');
+      axios.get(`${apiUrl}/api/babyname`, { headers: { Authorization: `Bearer ${token}` } })
         .then((res) => setBabyNames(res.data))
         .catch((err) => console.error("Error fetching baby names:", err));
     }
@@ -36,18 +36,19 @@ const SwipePage = () => {
     const payload = { userId: user?.id, babyNameId: bn.id, direction };
 
     try {
+      const token = localStorage.getItem('jwt');
       const res = await axios.post(`${apiUrl}/api/swipe`, payload, {
-        headers: { "Content-Type": "application/json" },
-        withCredentials: true
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       });
 
       if (res.data.matched) {
         // Fetch partner username
         if (user?.partnerId) {
           try {
+            const token = localStorage.getItem('jwt');
             const partnerRes = await axios.get(
               `${apiUrl}/api/users/${user.partnerId}`,
-              { withCredentials: true }
+              { headers: { Authorization: `Bearer ${token}` } }
             );
             setMatchInfo({ name: bn.name, partner: partnerRes.data.user.Username });
           } catch {
@@ -102,9 +103,10 @@ const SwipePage = () => {
       </div>
 
       <div className="d-flex justify-content-center">
-        <div className="swipe-card-stack" style={{ position: "relative", width: "300px", height: "400px" }}>
-          {springs.map((props, i) => (
-            <animated.div
+        <div className="responsive-container">
+          <div className="swipe-card-stack" style={{ position: "relative", width: "300px", height: "400px" }}>
+            {springs.map((props, i) => (
+              <animated.div
   key={babyNames[i]?.id || i}
   {...bind(i)}
   className="card swipe-card shadow-lg" // <- use your original CSS classes
@@ -124,7 +126,8 @@ const SwipePage = () => {
     <p className="card-text"><em>{babyNames[i]?.description}</em></p>
   </div>
 </animated.div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
 

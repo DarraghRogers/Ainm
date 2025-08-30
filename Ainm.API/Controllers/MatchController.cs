@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Ainm.API.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Ainm.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class MatchController : ControllerBase

@@ -72,4 +72,11 @@ app.UseCors("AllowNetlify"); // <-- enable CORS
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Add("Content-Security-Policy", "default-src 'self'");
+    await next();
+});
+
 app.Run();

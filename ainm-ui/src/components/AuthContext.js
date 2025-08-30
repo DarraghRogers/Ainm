@@ -11,23 +11,31 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const token = localStorage.getItem('jwt');
+    if (!token) {
+      setUser(null);
+      setTimeout(() => setLoading(false), 1800);
+      return;
+    }
     axios.get(`${apiUrl}/api/users/me`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => setUser(res.data))
       .catch(() => setUser(null))
-      .finally(() => setTimeout(() => setLoading(false), 1800)); // Show loading for ~2s
+      .finally(() => setTimeout(() => setLoading(false), 1800));
   }, []);
 
   const login = async (email, password) => {
-    await axios.post(`${apiUrl}/api/users/login`, { email, password }, { withCredentials: true });
-    // Re-fetch user info
-    const res = await axios.get(`${apiUrl}/api/users/me`, { withCredentials: true });
-    setUser(res.data);
+
+    const res = await axios.post(`${apiUrl}/api/users/login`, { email, password });
+    // Optionally fetch user info here if needed
+    return res.data.token;
   };
 
   const logout = async () => {
-    await axios.post(`${apiUrl}/api/users/logout`, {}, { withCredentials: true });
+    const token = localStorage.getItem('jwt');
+    await axios.post(`${apiUrl}/api/users/logout`, {}, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
     setUser(null);
   };
 

@@ -12,15 +12,17 @@ export default function MatchesPage() {
 
   useEffect(() => {
     if (!loading && user) {
-      axios.get(`${apiUrl}/api/match/${user.id}`, { withCredentials: true })
+      const token = localStorage.getItem('jwt');
+      axios.get(`${apiUrl}/api/match/${user.id}`, { headers: { Authorization: `Bearer ${token}` } })
         .then(res => setMatches(res.data))
         .catch(() => setMatches([]));
     }
-  }, [loading, user]);
+  }, [loading, user, apiUrl]); // Added apiUrl here
 
   const handleRemoveMatch = async (babyNameId) => {
     try {
-      await axios.delete(`${apiUrl}/api/match/${user.id}/${babyNameId}`, { withCredentials: true });
+      const token = localStorage.getItem('jwt');
+      await axios.delete(`${apiUrl}/api/match/${user.id}/${babyNameId}`, { headers: { Authorization: `Bearer ${token}` } });
       setMatches(matches.filter(m => m.id !== babyNameId));
     } catch {
       // Optionally show error

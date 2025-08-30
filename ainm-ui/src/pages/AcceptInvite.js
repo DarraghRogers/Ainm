@@ -17,7 +17,15 @@ export default function AcceptInvite() {
     }
     async function accept() {
       try {
-        await axios.post(`${apiUrl}/api/partner/link`, { inviteCode }, { withCredentials: true });
+        // Get JWT token from localStorage
+        const token = localStorage.getItem("jwt");
+        await axios.post(
+          `${apiUrl}/api/partner/link`,
+          { inviteCode },
+          {
+            headers: { Authorization: `Bearer ${token}` }
+          }
+        );
         setMsg("Partner linked! Redirecting...");
         setTimeout(() => navigate("/swipepage"), 2000);
       } catch (err) {
@@ -25,7 +33,7 @@ export default function AcceptInvite() {
       }
     }
     accept();
-  }, [inviteCode, user, navigate]);
+  }, [inviteCode, user, navigate, apiUrl]);
 
   return <div>{msg}</div>;
 }
