@@ -147,7 +147,12 @@ namespace Ainm.API.Controllers
             user.PasswordResetTokenExpires = DateTime.UtcNow.AddHours(1);
             await _context.SaveChangesAsync();
 
-            var frontendUrl = _config["FrontendUrl"] ?? "http://localhost:3000";
+            var frontendUrl = _config["FrontendUrl"];
+            if (string.IsNullOrEmpty(frontendUrl))
+            {
+                Console.WriteLine("FrontendUrl is not configured.");
+                return StatusCode(500, "Internal server error.");
+            }
             var resetLink = $"{frontendUrl}/reset-password?token={Uri.EscapeDataString(token)}";
             Console.WriteLine($"Sending password reset email to {user.Email} with link: {resetLink}");
             var subject = "Reset your Ainm password";
