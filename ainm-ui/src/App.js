@@ -11,6 +11,7 @@ import AcceptInvite from "./pages/AcceptInvite";
 import MatchesPage from './pages/MatchesPage';
 import NavBar from "./components/NavBar";
 import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from "./pages/ResetPassword";
 
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
           }
         />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
       </Routes>
     </AuthProvider>
   );

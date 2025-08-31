@@ -18,10 +18,12 @@ namespace Ainm.API.Controllers
     {
         private readonly AppDbContext _context;
         private readonly IConfiguration _config;
-        public UsersController(AppDbContext context, IConfiguration config)
+        private readonly IEmailSender _emailSender;
+        public UsersController(AppDbContext context, IConfiguration config, IEmailSender emailSender)
         {
             _context = context;
             _config = config;
+            _emailSender = emailSender;
         }
 
         [Authorize]
@@ -136,18 +138,27 @@ namespace Ainm.API.Controllers
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest req)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == req.Email);
-            // if (user == null)
-            //     return Ok(new { message = "If that email exists, a reset link has been sent." });
+            // Always return generic message for security
+            if (user == null)
+                return Ok(new { message = "If that email exists, a reset link has been sent." });
 
-            // Generate a secure token
             var token = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
             user.PasswordResetToken = token;
             user.PasswordResetTokenExpires = DateTime.UtcNow.AddHours(1);
             await _context.SaveChangesAsync();
 
-            // TODO: Send email with reset link (for now, just log it)
-            var resetLink = $"{_config["FrontendUrl"]}/reset-password?token={Uri.EscapeDataString(token)}";
-            Console.WriteLine($"Password reset link for {user.Email}: {resetLink}");
+            var frontendUrl = _config["FrontendUrl"] ?? "http://localhost:3000";
+            var resetLink = $"{frontendUrl}/reset-password?token={Uri.EscapeDataString(token)}";
+            Console.WriteLine($"Sending password reset email to {user.Email} with link: {resetLink}");
+            var subject = "Reset your Ainm password";
+            var htmlContent = $@"
+                <h2>Reset Your Password</h2>
+                <p>Click the link below to reset your password:</p>
+                <a href='{resetLink}'>Reset Password</a>
+                <p>If you did not request this, you can ignore this email.</p>
+            ";
+
+            await _emailSender.SendEmailAsync(user.Email, subject, htmlContent);
 
             return Ok(new { message = "If that email exists, a reset link has been sent." });
         }

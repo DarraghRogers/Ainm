@@ -1,28 +1,32 @@
-using MailKit.Net.Smtp;
-using MimeKit;
+using Microsoft.Extensions.Configuration;
+using SendGrid;
+using SendGrid.Helpers.Mail;
+using System.Threading.Tasks;
 
-public class EmailSender : IEmailSender
+public class EmailSender: IEmailSender
 {
-    private readonly IConfiguration _config;
+    private readonly string _apiKey;
+    private readonly string _fromEmail;
+    private readonly string _fromName;
+
     public EmailSender(IConfiguration config)
     {
-        _config = config;
+        _apiKey = config["SendGrid:ApiKey"];
+        _fromEmail = config["SendGrid:FromEmail"];
+        _fromName = config["SendGrid:FromName"];
     }
 
-    public async Task SendEmailAsync(string toEmail, string subject, string message)
+    public async Task SendEmailAsync(string toEmail, string subject, string htmlContent)
     {
-        var emailMessage = new MimeMessage();
-        emailMessage.From.Add(new MailboxAddress("Your App Name", _config["Email:SmtpFrom"]));
-        emailMessage.To.Add(new MailboxAddress("", toEmail));
-        emailMessage.Subject = subject;
-        emailMessage.Body = new TextPart("plain") { Text = message };
-
-        using (var client = new SmtpClient())
+        var options = new SendGridClientOptions
         {
-            await client.ConnectAsync(_config["Email:SmtpHost"], int.Parse(_config["Email:SmtpPort"]), MailKit.Security.SecureSocketOptions.StartTls);
-            await client.AuthenticateAsync(_config["Email:SmtpUser"], _config["Email:SmtpPass"]);
-            await client.SendAsync(emailMessage);
-            await client.DisconnectAsync(true);
-        }
+            ApiKey = _apiKey
+        };
+        options.SetDataResidency("eu");
+        var client = new SendGridClient(options);
+        var from = new EmailAddress(_fromEmail, _fromName);
+        var to = new EmailAddress(toEmail);
+        var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent: null, htmlContent: htmlContent);
+        await client.SendEmailAsync(msg);
     }
 }
