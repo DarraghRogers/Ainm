@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import axios from "axios";
-import { AuthContext } from "./AuthContext";
+import { AuthContext } from "../components/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 export default function InvitePartner() {
@@ -43,12 +43,6 @@ export default function InvitePartner() {
       <div className="row justify-content-center">
         <div className="col-md-6">
           <div className="card p-4 shadow" style={{ borderRadius: "32px", background: "linear-gradient(135deg, #ffe0ec 0%, #e0f7fa 100%)" }}>
-            <div className="d-flex justify-content-between align-items-center mb-2">
-              <h2 className="mb-4 text-center flex-grow-1" style={{ color: "#ffb6b9" }}>Invite a Partner</h2>
-              <button className="btn btn-outline-danger ms-3" onClick={handleLogout}>
-                Logout
-              </button>
-            </div>
             <div className="mb-3 d-flex">
               <input
                 type="email"

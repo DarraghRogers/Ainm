@@ -1,9 +1,9 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate, Link, useLocation } from "react-router-dom";
-import { AuthContext } from "./AuthContext";
+import { AuthContext } from "../components/AuthContext";
 import "./Register.css";
-import AppTitle from "./AppTitle";
+import AppTitle from "../components/AppTitle";
 
 export default function Register() {
   const [form, setForm] = useState({ username: '', email: '', password: '' });
@@ -53,8 +53,9 @@ export default function Register() {
 
   return (
     <div className="auth-container">
+      <AppTitle />
       <div className="auth-card">
-        <AppTitle />
+        
         <form onSubmit={handleRegister} className="w-100">
           <h3 className="auth-title">Register</h3>
           <div className="mb-3">

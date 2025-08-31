@@ -15,5 +15,9 @@ namespace Ainm.API.Models
         // Linking to another user
         public int? PartnerId { get; set; }
         public User? Partner { get; set; }
+
+        // Password reset token
+        public string? PasswordResetToken { get; set; }
+        public DateTime? PasswordResetTokenExpires { get; set; }
     }
 }

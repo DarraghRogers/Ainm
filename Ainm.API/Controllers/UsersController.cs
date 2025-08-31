@@ -132,6 +132,44 @@ namespace Ainm.API.Controllers
             return Ok(new { message = "Logged out" });
         }
 
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest req)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == req.Email);
+            // if (user == null)
+            //     return Ok(new { message = "If that email exists, a reset link has been sent." });
+
+            // Generate a secure token
+            var token = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+            user.PasswordResetToken = token;
+            user.PasswordResetTokenExpires = DateTime.UtcNow.AddHours(1);
+            await _context.SaveChangesAsync();
+
+            // TODO: Send email with reset link (for now, just log it)
+            var resetLink = $"{_config["FrontendUrl"]}/reset-password?token={Uri.EscapeDataString(token)}";
+            Console.WriteLine($"Password reset link for {user.Email}: {resetLink}");
+
+            return Ok(new { message = "If that email exists, a reset link has been sent." });
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest req)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u =>
+                u.PasswordResetToken == req.Token &&
+                u.PasswordResetTokenExpires > DateTime.UtcNow);
+
+            if (user == null)
+                return BadRequest("Invalid or expired reset token.");
+
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(req.NewPassword);
+            user.PasswordResetToken = null;
+            user.PasswordResetTokenExpires = null;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Password has been reset successfully." });
+        }
+
         public class RegisterRequest
         {
             public string Username { get; set; }
@@ -143,6 +181,17 @@ namespace Ainm.API.Controllers
         {
             public string Email { get; set; }
             public string Password { get; set; }
+        }
+
+        public class ForgotPasswordRequest
+        {
+            public string Email { get; set; }
+        }
+
+        public class ResetPasswordRequest
+        {
+            public string Token { get; set; }
+            public string NewPassword { get; set; }
         }
 
         private string GenerateJwtToken(User user)

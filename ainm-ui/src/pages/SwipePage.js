@@ -3,15 +3,13 @@ import React, { useEffect, useState, useContext } from "react";
 import { useSprings, animated } from "@react-spring/web";
 import { useDrag } from "react-use-gesture";
 import axios from "axios";
-import { AuthContext } from "./AuthContext";
-import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../components/AuthContext";
 import "./SwipePage.css";
 
 const SwipePage = () => {
   const [babyNames, setBabyNames] = useState([]);
   const [matchInfo, setMatchInfo] = useState(null);
-  const { user, logout, loading } = useContext(AuthContext);
-  const navigate = useNavigate();
+  const { user, loading } = useContext(AuthContext);
   const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
@@ -80,51 +78,35 @@ const SwipePage = () => {
     });
   });
 
-  const handleLogout = async () => {
-    await logout();
-    navigate("/login");
-  };
-
   if (loading) return null;
 
   return (
     <div className="container swipepage-container mt-5">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 className="text-center flex-grow-1">Swipe Baby Names</h2>
-        <button className="btn btn-outline-danger ms-3" onClick={handleLogout}>
-          Logout
-        </button>
-        <button onClick={() => navigate("/invite")} className="btn btn-outline-primary ms-3">
-          Invite Partner
-        </button>
-        <button onClick={() => navigate("/matches")} className="btn btn-outline-success ms-3">
-          View Matches
-        </button>
-      </div>
+      
 
       <div className="d-flex justify-content-center">
-        <div className="swipe-card-stack" style={{ position: "relative", width: "300px", height: "400px" }}>
+        <div className="swipe-card-stack" >
           {springs.map((props, i) => (
             <animated.div
-  key={babyNames[i]?.id || i}
-  {...bind(i)}
-  className="card swipe-card shadow-lg" // <- use your original CSS classes
-  style={{
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-    touchAction: "none",
-    ...props, // includes x transform
-  }}
->
-  <div className="card-body">
-    <h3 className="card-title">{babyNames[i]?.name}</h3>
-    <p className="card-text"><strong>Gender:</strong> {babyNames[i]?.gender}</p>
-    <p className="card-text"><strong>Origin:</strong> {babyNames[i]?.origin}</p>
-    <p className="card-text"><strong>Meaning:</strong> {babyNames[i]?.meaning}</p>
-    <p className="card-text"><em>{babyNames[i]?.description}</em></p>
-  </div>
-</animated.div>
+              key={babyNames[i]?.id || i}
+              {...bind(i)}
+              className="card swipe-card shadow-lg"
+              style={{
+                position: "absolute",
+                width: "100%",
+                height: "100%",
+                touchAction: "none",
+                ...props,
+              }}
+            >
+              <div className="card-body">
+                <h3 className="card-title">{babyNames[i]?.name}</h3>
+                <p className="card-text"><strong>Gender:</strong> {babyNames[i]?.gender}</p>
+                <p className="card-text"><strong>Origin:</strong> {babyNames[i]?.origin}</p>
+                <p className="card-text"><strong>Meaning:</strong> {babyNames[i]?.meaning}</p>
+                <p className="card-text"><em>{babyNames[i]?.description}</em></p>
+              </div>
+            </animated.div>
           ))}
         </div>
       </div>

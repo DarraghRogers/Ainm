@@ -1,19 +1,24 @@
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider } from "./components/AuthContext";
 import React, { useState } from 'react';
-import Register from './components/Register';
-import Login from './components/Login';
-import SwipePage from './components/SwipePage';
+import Register from './pages/Register';
+import Login from './pages/Login';
+import SwipePage from './pages/SwipePage';
 import axios from 'axios';
 import ProtectedRoute from './components/ProtectedRoute';
-import InvitePartner from "./components/InvitePartner";
+import InvitePartner from "./pages/InvitePartner";
 import AcceptInvite from "./pages/AcceptInvite";
-import MatchesPage from './components/MatchesPage';
+import MatchesPage from './pages/MatchesPage';
 import NavBar from "./components/NavBar";
+import ForgotPassword from './pages/ForgotPassword';
+
 
 function App() {
   const location = useLocation();
   const hideNav = ["/login", "/register"].includes(location.pathname);
+  //const [loading, setLoading] = useState(true);
+
+  //if (loading) return <LoadingScreen />;
 
   return (
     <AuthProvider>
@@ -40,6 +45,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
       </Routes>
     </AuthProvider>
   );

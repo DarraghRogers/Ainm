@@ -1,13 +1,12 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
-import LoadingScreen from "./LoadingScreen";
 import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false); // Set to false by default
   const apiUrl = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
 
@@ -15,15 +14,13 @@ export function AuthProvider({ children }) {
     const token = localStorage.getItem('jwt');
     if (!token) {
       setUser(null);
-      setLoading(false);
       return;
     }
     axios.get(`${apiUrl}/api/users/me`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => setUser(res.data))
-      .catch(() => setUser(null))
-      .finally(() => setLoading(false)); // Only set loading to false after user is set
+      .catch(() => setUser(null));
   }, []);
 
   const login = async (email, password) => {
@@ -49,7 +46,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={{ user, login, logout, loading }}>
-      {loading ? <LoadingScreen /> : children}
+      {children}
     </AuthContext.Provider>
   );
 }
