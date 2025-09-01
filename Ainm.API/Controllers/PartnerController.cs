@@ -98,8 +98,9 @@ namespace Ainm.API.Controllers
 
         private string GenerateInviteLink(string inviteCode)
         {
-            var apiUrl = Environment.GetEnvironmentVariable("REACT_APP_API_URL");
-            return $"{apiUrl}/invite/{inviteCode}";
+            //get FrontendUrl from appsettings
+            var frontendUrl = _configuration["FrontendUrl"];
+            return $"{frontendUrl}/invite/{inviteCode}";
         }
     }
 

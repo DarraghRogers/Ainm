@@ -142,19 +142,14 @@ namespace Ainm.API.Controllers
             if (user == null)
                 return Ok(new { message = "If that email exists, a reset link has been sent." });
 
+            // Always generate a new token and expiry
             var token = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
             user.PasswordResetToken = token;
             user.PasswordResetTokenExpires = DateTime.UtcNow.AddHours(1);
             await _context.SaveChangesAsync();
 
-            var frontendUrl = _config["FrontendUrl"];
-            if (string.IsNullOrEmpty(frontendUrl))
-            {
-                Console.WriteLine("FrontendUrl is not configured.");
-                return StatusCode(500, "Internal server error.");
-            }
+            var frontendUrl = _config["FrontendUrl"]; ;
             var resetLink = $"{frontendUrl}/reset-password?token={Uri.EscapeDataString(token)}";
-            Console.WriteLine($"Sending password reset email to {user.Email} with link: {resetLink}");
             var subject = "Reset your Ainm password";
             var htmlContent = $@"
                 <h2>Reset Your Password</h2>
