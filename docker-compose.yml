@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Ainm.API/Dockerfile
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=host.docker.internal;Database=ainm_db;Username=ainm_user;Password=ainm_password
+      - Jwt__Key=your-super-secret-jwt-key-here-make-it-very-long-and-secure
+      - Jwt__Issuer=Ainm.API

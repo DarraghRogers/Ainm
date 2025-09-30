@@ -1,0 +1,41 @@
+# Ignore build outputs
+bin/
+obj/
+publish/
+
+# Ignore development files
+*.user
+*.suo
+*.cache
+*.log
+
+# Ignore IDE files
+.vs/
+.vscode/
+*.swp
+*.swo
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore Git
+.git/
+.gitignore
+
+# Ignore Docker files
+Dockerfile*
+.dockerignore
+
+# Ignore documentation
+README.md
+*.md
+
+# Ignore test files
+**/Test*/
+**/*.Tests/
+**/*.Test/
+
+# Ignore temporary files
+*.tmp
+*.temp
