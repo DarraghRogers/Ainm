@@ -73,10 +73,17 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    BabyNameSeeder.SeedAllBatches(context); // Call your seeder
+}
+
 app.Use(async (context, next) =>
 {
     context.Response.Headers.Add("Content-Security-Policy", "default-src 'self'");
     await next();
 });
+
 
 app.Run();

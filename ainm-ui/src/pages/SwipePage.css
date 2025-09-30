@@ -3,79 +3,153 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; /* Align items to the top */
-  background: none;
-  padding: 0;
+  justify-content: flex-start;
+  background: linear-gradient(180deg, #fffafc 0%, #f0faff 100%);
+  padding: 2rem 1rem;
 }
 
+/* Card Stack */
 .swipe-card-stack {
   position: relative;
-  width: 300px;
-  height: 400px;
-  margin-top: 20vh;   /* Pushes the stack down ~1/3 of the page */
-  margin-bottom: 1rem;
+  width: 320px;
+  height: 440px;
   display: flex;
   align-items: center;
   justify-content: center;
+  perspective: 1000px; /* Add 3D perspective */
 }
 
 .swipe-card {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  min-height: 100%;
-  min-width: 100%;
-  background: linear-gradient(135deg, #ffe0ec 0%, #e0f7fa 100%);
-  border-radius: 32px;
-  padding: 32px 24px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+  border-radius: 20px;
+  background: white;
+  cursor: grab;
+  transition: all 0.3s ease;
+  will-change: transform;
+  touch-action: none;
+  user-select: none;
+}
+
+/* Add permanent glow effect to all cards */
+.swipe-card::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #ff6f91, #3ba6ff, #8e6cd8);
+  border-radius: 22px;
+  z-index: -1;
+  opacity: 0.4;
+  transition: opacity 0.3s ease;
+}
+
+.swipe-card:hover::before {
+  opacity: 0.6;
+}
+
+.swipe-card:active {
+  cursor: grabbing;
+}
+
+/* Top card (fully visible) */
+.top-card {
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  z-index: 10;
+}
+
+.top-card:hover {
+  box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+  transform: translateY(-2px);
+}
+
+/* Stacked cards (behind the top card) */
+.stacked-card {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  opacity: 0.9;
+  transform: translateY(8px);
+}
+
+
+/* Card Content */
+.card-body {
+  padding: 1.5rem;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  border: 2px solid #f3f3f3;
-  transition: box-shadow 0.2s;
-  box-sizing: border-box;
-  /* Remove overflow: hidden; */
-}
-
-.swipe-card:hover {
-  box-shadow: 0 12px 40px rgba(0,0,0,0.18);
 }
 
 .card-title {
-  color: #ffb6b9;
-  font-family: 'Segoe UI', cursive, sans-serif;
+  color: #ff6f91;
+  font-family: 'Poppins', sans-serif;
   font-size: 2rem;
-  margin-bottom: 0.5rem;
-  border-radius: 16px;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  text-align: center;
 }
 
 .card-text {
-  color: #6c757d;
-  font-size: 1.1rem;
-  border-radius: 12px;
+  color: #555;
+  font-size: 1.05rem;
+  margin-bottom: 0.5rem;
   text-align: center;
-  word-break: break-word;
 }
 
 .card-text strong {
-  color: #6ec6ff;
-  border-radius: 8px;
+  color: #3ba6ff;
 }
 
 .card-text em {
-  color: #b39ddb;
-  border-radius: 8px;
+  color: #8e6cd8;
 }
 
-.swipe {
+/* Swipe Indicators */
+.swipe-indicator {
   position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: 32px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  opacity: 0;
+  transition: all 0.3s ease;
+  pointer-events: none;
 }
 
-/* Add to SwipePage.css */
+.swipe-indicator.swipe-left {
+  left: 20px;
+  background: rgba(255, 107, 107, 0.9);
+  color: white;
+}
+
+.swipe-indicator.swipe-right {
+  right: 20px;
+  background: rgba(76, 175, 80, 0.9);
+  color: white;
+}
+
+/* Show indicators when dragging */
+.swipe-card.dragging .swipe-indicator.swipe-left {
+  opacity: 1;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.swipe-card.dragging .swipe-indicator.swipe-right {
+  opacity: 1;
+  transform: translateY(-50%) scale(1.1);
+}
+
+/* Match Animation */
 .match-animation {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -84,38 +158,59 @@
   align-items: center;
   justify-content: center;
   z-index: 9999;
-  animation: fadeIn 0.5s;
+  animation: fadeIn 0.4s ease;
 }
+
 .match-popup {
   background: #fff;
-  border-radius: 24px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  border-radius: 20px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.15);
   padding: 2rem 3rem;
   text-align: center;
-  animation: popUp 0.5s;
+  animation: popUp 0.45s ease;
 }
 
-.swipe-card-stack {
-  position: relative;
-  width: 300px;
-  height: 400px;
-  margin-top: 20vh;   /* Pushes the stack down ~1/3 of the page */
+.match-popup h2 {
+  color: #ff6f91;
+  font-family: 'Poppins', sans-serif;
   margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-.swipe-card {
-  cursor: grab;
-  user-select: none;
+.match-popup p {
+  font-size: 1.2rem;
+  color: #444;
 }
 
+/* Animations */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
 @keyframes popUp {
-  0% { transform: scale(0.7); }
-  100% { transform: scale(1); }
+  0% { transform: scale(0.7); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }
+
+@keyframes cardSlideIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px) scale(0.9); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0) scale(1); 
+  }
+}
+
+/* Card entrance animation */
+.swipe-card {
+  animation: cardSlideIn 0.5s ease-out;
+}
+
+/* Improved card transitions */
+.swipe-card {
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+

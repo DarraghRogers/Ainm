@@ -59,7 +59,7 @@ html, body, #root {
 }
 
 /* Make forms and cards responsive */
-.auth-card, .swipe-card {
+.auth-card {
   width: 98vw;
   max-width: 98vw;
   margin: 1rem auto;

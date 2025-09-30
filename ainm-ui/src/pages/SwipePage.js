@@ -16,19 +16,22 @@ const SwipePage = () => {
     if (!loading && user) {
       const token = localStorage.getItem('jwt');
       axios.get(`${apiUrl}/api/babyname`, { headers: { Authorization: `Bearer ${token}` } })
-        .then((res) => setBabyNames(res.data))
+        .then((res) => {
+          setBabyNames(res.data);
+        })
         .catch((err) => console.error("Error fetching baby names:", err));
     }
   }, [loading, user, apiUrl]);
 
   const [gone] = useState(() => new Set());
-  const [springs, api] = useSprings(babyNames.length, (i) => ({
-    x: 0,
-    y: i * -4,
-    scale: 1,
-    rot: 0,
-    config: { tension: 300, friction: 30 },
-  }));
+const [springs, api] = useSprings(babyNames.length, (index) => ({
+  x: 0,
+  y: 0,
+  rotate: 0,
+  scale: 1, // All cards same size
+  zIndex: babyNames.length - index, // Proper z-index stacking
+  config: { tension: 400, friction: 25 },
+}));
 
   const handleSwipe = async (direction, bn) => {
     const payload = { userId: user?.id, babyNameId: bn.id, direction };
@@ -63,20 +66,24 @@ const SwipePage = () => {
     }
   };
 
-  const bind = useDrag(({ args: [index], down, movement: [mx] }) => {
-    api.start((i) => {
-      if (i !== index) return;
-      const isGone = !down && Math.abs(mx) > 100;
-      if (isGone) gone.add(index);
+const bind = useDrag(({ args: [index], down, movement: [mx], direction: [dx] }) => {
+  api.start((i) => {
+    if (i !== index) return; // only animate the current card
 
-      if (isGone) handleSwipe(mx > 0 ? "right" : "left", babyNames[i]);
+    const isGone = !down && Math.abs(mx) > 100;
+    if (isGone) {
+      gone.add(index);
+      handleSwipe(mx > 0 ? "right" : "left", babyNames[i]);
+    }
 
-      return {
-        x: isGone ? (mx > 0 ? 500 : -500) : down ? mx : 0,
-        scale: down ? 1.1 : 1,
-      };
-    });
+    return {
+      x: isGone ? (mx > 0 ? 800 : -800) : down ? mx : 0, // Faster swipe
+      rotate: mx / 100, // tilt effect
+      scale: down ? 1.05 : 1, // All cards same size
+      y: down ? -10 : 0, // Slight lift effect when dragging
+    };
   });
+});
 
   if (loading) return null;
 
@@ -85,29 +92,50 @@ const SwipePage = () => {
       
 
       <div className="d-flex justify-content-center">
-        <div className="swipe-card-stack" >
-          {springs.map((props, i) => (
-            <animated.div
-              key={babyNames[i]?.id || i}
-              {...bind(i)}
-              className="card swipe-card shadow-lg"
-              style={{
-                position: "absolute",
-                width: "100%",
-                height: "100%",
-                touchAction: "none",
-                ...props,
-              }}
-            >
-              <div className="card-body">
-                <h3 className="card-title">{babyNames[i]?.name}</h3>
-                <p className="card-text"><strong>Gender:</strong> {babyNames[i]?.gender}</p>
-                <p className="card-text"><strong>Origin:</strong> {babyNames[i]?.origin}</p>
-                <p className="card-text"><strong>Meaning:</strong> {babyNames[i]?.meaning}</p>
-                <p className="card-text"><em>{babyNames[i]?.description}</em></p>
-              </div>
-            </animated.div>
-          ))}
+        <div className="swipe-card-stack">
+          {springs.map(({ x, y, rotate, scale, zIndex }, i) => {
+            const babyName = babyNames[i];
+            if (!babyName) return null;
+            
+            // Show all cards but only display the top 3 for visual stacking
+            const isVisible = true;
+            
+            return (
+              <animated.div
+                key={babyName.id || i}
+                {...bind(i)}
+                className={`swipe-card ${i === 0 ? 'top-card' : 'stacked-card'}`}
+                style={{
+                  zIndex: zIndex,
+                  x: x,
+                  y: y,
+                  rotate: rotate,
+                  scale: scale,
+                  display: isVisible ? 'block' : 'none',
+                }}
+              >
+                <div className="card-body">
+                  <h3 className="card-title">{babyName.name}</h3>
+                  <p className="card-text"><strong>Gender:</strong> {babyName.gender}</p>
+                  <p className="card-text"><strong>Origin:</strong> {babyName.origin}</p>
+                  <p className="card-text"><strong>Meaning:</strong> {babyName.meaning}</p>
+                  <p className="card-text"><em>{babyName.description}</em></p>
+                </div>
+                
+                {/* Swipe indicators */}
+                {i === 0 && (
+                  <>
+                    <div className="swipe-indicator swipe-left">
+                      <span>👎</span>
+                    </div>
+                    <div className="swipe-indicator swipe-right">
+                      <span>👍</span>
+                    </div>
+                  </>
+                )}
+              </animated.div>
+            );
+          })}
         </div>
       </div>
 

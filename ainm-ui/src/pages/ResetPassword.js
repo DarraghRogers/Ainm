@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import AppTitle from "../components/AppTitle";
 
@@ -52,6 +52,9 @@ export default function ResetPassword() {
           {msg && <div className="alert alert-success mt-3">{msg}</div>}
           {error && <div className="alert alert-danger mt-3">{error}</div>}
         </form>
+        <div className="text-center mt-3">
+          <Link to="/login" className="auth-link">Already have an account? Login</Link>
+        </div>
       </div>
     </div>
   );

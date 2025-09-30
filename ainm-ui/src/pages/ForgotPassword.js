@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./Login.css";
 import AppTitle from "../components/AppTitle.js";
+import { Link } from "react-router-dom";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -43,6 +44,9 @@ export default function ForgotPassword() {
           {msg && <div className="alert alert-success mt-3">{msg}</div>}
           {error && <div className="alert alert-danger mt-3">{error}</div>}
         </form>
+        <div className="text-center mt-3">
+          <Link to="/login" className="auth-link">Already have an account? Login</Link>
+        </div>
       </div>
     </div>
   );

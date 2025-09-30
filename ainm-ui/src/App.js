@@ -16,7 +16,7 @@ import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   const location = useLocation();
-  const hideNav = ["/login", "/register"].includes(location.pathname);
+  const hideNav = ["/login", "/register", "/forgot-password", "/reset-password"].includes(location.pathname);
   //const [loading, setLoading] = useState(true);
 
   //if (loading) return <LoadingScreen />;
